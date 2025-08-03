@@ -16,6 +16,9 @@ export default function SidebarAdmin() {
         <ListItemButton component={Link} href="/admin/settings">
           <ListItemText primary="Pengaturan" />
         </ListItemButton>
+        <ListItemButton component={Link} href="/admin/websocket">
+          <ListItemText primary="WebSocket" />
+        </ListItemButton>
       </List>
     </Box>
   );
