@@ -1,12 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import TextInput from "@/components/input/Text";
+import { useFormState } from "@/hooks/useFormState";
+import { required } from "@/utils/validators";
 
 export default function WebSocketPage() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
 
+  const { values, errors, handleChange, handleBlur, handleSubmit, resetForm } =
+    useFormState({ input: "" }, { input: [required()] });
+
+  // WebSocket
   useEffect(() => {
     // Koneksi ke WebSocket
     const ws = new WebSocket("wss://echo.websocket.org");
@@ -38,15 +45,18 @@ export default function WebSocketPage() {
 
   const sendMessage = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(input);
-      setMessages((prev) => [...prev, `You: ${input}`]);
-      setInput("");
+      socket.send(values.input);
+      setMessages((prev) => [...prev, `You: ${values.input}`]);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    sendMessage();
+    handleSubmit((vals) => {
+      console.log("📩 Message sent:", vals);
+      sendMessage();
+      resetForm();
+    });
   };
 
   return (
@@ -66,13 +76,14 @@ export default function WebSocketPage() {
           <div key={i}>{msg}</div>
         ))}
       </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
+      <form onSubmit={onSubmit}>
+        <TextInput
+          label="Pesan"
           placeholder="Ketik pesan..."
-          onChange={(e) => setInput(e.target.value)}
-          style={{ padding: "5px", marginRight: "5px" }}
+          value={values.input}
+          onChange={(val) => handleChange("input", val)}
+          onBlur={() => handleBlur("input")}
+          error={errors.input}
         />
         <button type="submit" style={{ padding: "5px 10px" }}>
           Kirim

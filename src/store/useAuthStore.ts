@@ -30,5 +30,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, role: "guest" });
     Cookies.remove("token");
     Cookies.remove("role");
+    window.location.href = "/login";
   },
 }));

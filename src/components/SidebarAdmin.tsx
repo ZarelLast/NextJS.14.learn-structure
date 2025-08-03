@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { Box, List, ListItemButton, ListItemText } from "@mui/material";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SidebarAdmin() {
+  const { logout } = useAuth();
+
   return (
     <Box sx={{ width: 250, bgcolor: "#f0f0f0", height: "100vh", p: 2 }}>
       <List>
@@ -18,6 +21,9 @@ export default function SidebarAdmin() {
         </ListItemButton>
         <ListItemButton component={Link} href="/admin/websocket">
           <ListItemText primary="WebSocket" />
+        </ListItemButton>
+        <ListItemButton onClick={logout}>
+          <ListItemText primary="Log Out" />
         </ListItemButton>
       </List>
     </Box>
